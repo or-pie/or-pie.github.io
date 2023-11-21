@@ -1,0 +1,1011 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://or-pie.com/shortest-path-series/shortest-path-problem/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../bellman-ford-algorithm/">
+      
+      
+      <link rel="icon" href="../../images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.3">
+    
+    
+  
+    <title>最短路径问题 - 运筹派</title>
+  
+
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#1-%E9%97%AE%E9%A2%98%E5%AE%9A%E4%B9%89" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="运筹派" class="md-header__button md-logo" aria-label="运筹派" data-md-component="logo">
+      
+  <img src="../../images/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            运筹派
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              最短路径问题
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jinboszu" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="运筹派" class="md-nav__button md-logo" aria-label="运筹派" data-md-component="logo">
+      
+  <img src="../../images/logo.png" alt="logo">
+
+    </a>
+    运筹派
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jinboszu" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5Z"/></svg>
+  
+  <span class="md-ellipsis">
+    主页
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 15a3 3 0 0 1 3 3 3 3 0 0 1-3 3 2.99 2.99 0 0 1-2.83-2H14v-2h1.17c.41-1.17 1.52-2 2.83-2m0 2a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-9a1.43 1.43 0 0 0 1.43-1.43 1.43 1.43 0 1 0-2.86 0A1.43 1.43 0 0 0 18 8m0-5.43a4 4 0 0 1 4 4C22 9.56 18 14 18 14s-4-4.44-4-7.43a4 4 0 0 1 4-4M8.83 17H10v2H8.83A2.99 2.99 0 0 1 6 21a3 3 0 0 1-3-3c0-1.31.83-2.42 2-2.83V14h2v1.17c.85.3 1.53.98 1.83 1.83M6 17a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1M6 3a3 3 0 0 1 3 3c0 1.31-.83 2.42-2 2.83V10H5V8.83A2.99 2.99 0 0 1 3 6a3 3 0 0 1 3-3m0 2a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m5 14v-2h2v2h-2m-4-6H5v-2h2v2Z"/></svg>
+  
+  <span class="md-ellipsis">
+    最短路径问题系列
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            最短路径问题系列
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 7v2h2v8h2V7h-4Z"/></svg>
+  
+  <span class="md-ellipsis">
+    最短路径问题
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 7v2h2v8h2V7h-4Z"/></svg>
+  
+  <span class="md-ellipsis">
+    最短路径问题
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-%E9%97%AE%E9%A2%98%E5%AE%9A%E4%B9%89" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. 问题定义
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%9A%84%E6%80%A7%E8%B4%A8" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. 最短路径的性质
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-%E6%9C%89%E5%90%91%E5%9B%BE%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. 有向图的数据结构
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-%E7%BA%BF%E6%80%A7%E8%A7%84%E5%88%92%E6%A8%A1%E5%9E%8B" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. 线性规划模型
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE" class="md-nav__link">
+    <span class="md-ellipsis">
+      参考文献
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bellman-ford-algorithm/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 7v2h4v2h-2a2 2 0 0 0-2 2v4h6v-2h-4v-2h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H9Z"/></svg>
+  
+  <span class="md-ellipsis">
+    Bellman-Ford 算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../queue-based-bellman-ford-algorithm/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 15v-1.5a1.5 1.5 0 0 0-1.5-1.5 1.5 1.5 0 0 0 1.5-1.5V9a2 2 0 0 0-2-2H9v2h4v2h-2v2h2v2H9v2h4a2 2 0 0 0 2-2"/></svg>
+  
+  <span class="md-ellipsis">
+    队列版 Bellman-Ford 算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../negative-weight-cycle-problem/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 7v6h4v4h2V7h-2v4h-2V7H9Z"/></svg>
+  
+  <span class="md-ellipsis">
+    负权重环问题
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dijkstra-algorithm/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 7v6h4v2H9v2h4a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-2V9h4V7H9Z"/></svg>
+  
+  <span class="md-ellipsis">
+    Dijkstra 算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lazy-dijkstra-algorithm/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-2V9h4V7h-4m0 6h2v2h-2v-2Z"/></svg>
+  
+  <span class="md-ellipsis">
+    懒惰 Dijkstra 算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../floyd-warshall-algorithm/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m11 17 4-8V7H9v2h4l-4 8"/></svg>
+  
+  <span class="md-ellipsis">
+    Floyd-Warshall 算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../johnson-algorithm/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 13h2v2h-2m0-6h2v2h-2m0 6h2a2 2 0 0 0 2-2v-1.5a1.5 1.5 0 0 0-1.5-1.5 1.5 1.5 0 0 0 1.5-1.5V9a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v1.5a1.5 1.5 0 0 0 1.5 1.5A1.5 1.5 0 0 0 9 13.5V15a2 2 0 0 0 2 2"/></svg>
+  
+  <span class="md-ellipsis">
+    Johnson 算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../minimum-weight-cycle-problem/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 17a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2H9v2h4m0-6h-2V9h2v2Z"/></svg>
+  
+  <span class="md-ellipsis">
+    最小权重环问题
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../minimum-mean-cycle-problem/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 7a2 2 0 0 0-2 2v8h2v-4h2v4h2V9a2 2 0 0 0-2-2h-2m0 2h2v2h-2V9Z"/></svg>
+  
+  <span class="md-ellipsis">
+    最小均值环问题
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../minimum-ratio-cycle-problem/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 10.5V9a2 2 0 0 0-2-2H9v10h4a2 2 0 0 0 2-2v-1.5c0-.8-.7-1.5-1.5-1.5.8 0 1.5-.7 1.5-1.5M13 15h-2v-2h2v2m0-4h-2V9h2v2Z"/></svg>
+  
+  <span class="md-ellipsis">
+    最小比例环问题
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basic-cyclic-scheduling-problem/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-1h-2v1h-2V9h2v1h2V9a2 2 0 0 0-2-2h-2Z"/></svg>
+  
+  <span class="md-ellipsis">
+    基本周期调度问题
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-%E9%97%AE%E9%A2%98%E5%AE%9A%E4%B9%89" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. 问题定义
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%9A%84%E6%80%A7%E8%B4%A8" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. 最短路径的性质
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-%E6%9C%89%E5%90%91%E5%9B%BE%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. 有向图的数据结构
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-%E7%BA%BF%E6%80%A7%E8%A7%84%E5%88%92%E6%A8%A1%E5%9E%8B" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. 线性规划模型
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE" class="md-nav__link">
+    <span class="md-ellipsis">
+      参考文献
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+  <h1>最短路径问题</h1>
+
+<div class="admonition quote close classic">
+<p class="admonition-title">最短路径问题是图论研究中的经典问题，旨在寻找图中两节点之间的最短路径。</p>
+</div>
+<h2 id="1-%E9%97%AE%E9%A2%98%E5%AE%9A%E4%B9%89">1. 问题定义</h2>
+<p>在 <strong>最短路径问题</strong> 中，给定一个 <strong>有向图</strong> <span class="arithmatex">\(G = (V, E)\)</span> 和 <strong>权重函数</strong> <span class="arithmatex">\(w : E \rightarrow \mathbb{R}\)</span>，该权重函数将每条边映射到实数值的权重上。边的权重可以表示距离、时间、成本、惩罚、损失，或者任何我们希望最小化的可以沿着路径线性累加的度量值。给定路径 <span class="arithmatex">\(p = \langle v_0 \stackrel{e_1}{\rightarrow} v_1 \cdots \stackrel{e_k}{\rightarrow} v_k \rangle\)</span>，其中 <span class="arithmatex">\(e_i\)</span> 指的是路径上的第 <span class="arithmatex">\(i\)</span> 条边，连接着节点 <span class="arithmatex">\(v_{i-1}\)</span> 和节点 <span class="arithmatex">\(v_{i}\)</span>。路径 <span class="arithmatex">\(p\)</span> 的 <strong>权重</strong> <span class="arithmatex">\(w(p)\)</span> 是构成该路径的所有边权重之和，即 <span class="arithmatex">\(w(p) = \sum_{i=1}^k w(e_i)\)</span>。定义从节点 <span class="arithmatex">\(u\)</span> 到节点 <span class="arithmatex">\(v\)</span> 的 <strong>最短路径权重</strong> <span class="arithmatex">\(\delta(u, v) = \min\{w(p) : s \stackrel{p}{\rightsquigarrow} t\}\)</span>。如果不存在从节点 <span class="arithmatex">\(u\)</span> 到节点 <span class="arithmatex">\(v\)</span> 的路径，定义 <span class="arithmatex">\(\delta(u, v) = \infty\)</span>。从节点 <span class="arithmatex">\(u\)</span> 到节点 <span class="arithmatex">\(v\)</span> 的 <strong>最短路径</strong> 则定义为任何一条从 <span class="arithmatex">\(u\)</span> 到 <span class="arithmatex">\(v\)</span> 的权重为 <span class="arithmatex">\(w(p) = \delta(u, v)\)</span> 的路径 <span class="arithmatex">\(p\)</span>。</p>
+<p>根据问题的提问方式，我们可以考虑以下几种问题的变体：</p>
+<ul>
+<li><b>单源点最短路径问题：</b>找到从给定 <strong>源点</strong> <span class="arithmatex">\(s\)</span> 到每个节点 <span class="arithmatex">\(v\)</span> 的最短路径。单源点最短路径问题是最基础的最短路径问题，解决它就可以解决其他变体；</li>
+<li><b>单终点最短路径问题：</b>找到从每个节点 <span class="arithmatex">\(v\)</span> 到给定 <strong>终点</strong> <span class="arithmatex">\(t\)</span> 的最短路径。如果将图的每条边的方向翻转过来，我们就可以将这个问题转换为单源点最短路径问题；</li>
+<li><b>单节点对最短路径问题：</b>找到从给定源点 <span class="arithmatex">\(s\)</span> 到给定终点 <span class="arithmatex">\(t\)</span> 的最短路径。如果解决了以 <span class="arithmatex">\(s\)</span> 为源点的单源点最短路径问题，那么也就解决了这个问题。事实上，在该问题的所有已知算法中，最坏情况下的渐近运行时间都和最好的单源点最短路径算法的运行时间一样；</li>
+<li><b>全节点对最短路径问题：</b>对于每一对节点 <span class="arithmatex">\(u\)</span>、<span class="arithmatex">\(v\)</span>，找到从 <span class="arithmatex">\(u\)</span> 到 <span class="arithmatex">\(v\)</span> 的最短路径。虽然可以针对每组节点对运行一遍单源最短路径算法，但通常可以更快地解决这个问题。</li>
+</ul>
+<h2 id="2-%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%9A%84%E6%80%A7%E8%B4%A8">2. 最短路径的性质</h2>
+<p>首先，我们介绍一下最短路径算法通常依赖的一个重要性质，即最短路径的 <strong>最优子结构</strong>：两个节点之间的最短路径一定包含着其他的最短路径。</p>
+<div class="admonition tip">
+<p class="admonition-title">最优子结构</p>
+<p>设 <span class="arithmatex">\(p = \langle v_0 \stackrel{e_1}{\rightarrow} v_1 \cdots \stackrel{e_k}{\rightarrow} v_k \rangle\)</span> 为从节点 <span class="arithmatex">\(v_0\)</span> 到节点 <span class="arithmatex">\(v_k\)</span> 的一条最短路径，并且对于任意的 <span class="arithmatex">\(i\)</span> 和 <span class="arithmatex">\(j\)</span>，其中 <span class="arithmatex">\(0 \le i \le j \le k\)</span>，令 <span class="arithmatex">\(p_{i,j} = \langle v_i \stackrel{e_{i+1}}{\rightarrow} v_{i+1} \cdots \stackrel{e_j}{\rightarrow} v_j \rangle\)</span> 为路径 <span class="arithmatex">\(p\)</span> 中从节点 <span class="arithmatex">\(v_i\)</span> 到节点 <span class="arithmatex">\(v_j\)</span> 的子路径，那么 <span class="arithmatex">\(p_{i,j}\)</span> 是从 <span class="arithmatex">\(v_i\)</span> 到 <span class="arithmatex">\(v_j\)</span> 的一条最短路径。</p>
+<details class="success proof" open="open">
+<summary>证明</summary>
+<p>如果把路径 <span class="arithmatex">\(p\)</span> 分解为 <span class="arithmatex">\(\langle v_0 \stackrel{p_{0,i}}{\rightsquigarrow} v_i \stackrel{p_{i,j}}{\rightsquigarrow} v_j \stackrel{p_{j,k}}{\rightsquigarrow} v_k \rangle\)</span>，则有 <span class="arithmatex">\(w(p) = w(p_{0,i}) + w(p_{i,j}) + w(p_{j,k})\)</span>。现在，假设存在一条从 <span class="arithmatex">\(v_i\)</span> 到 <span class="arithmatex">\(v_j\)</span> 的路径 <span class="arithmatex">\(p'_{i,j}\)</span>，其权重 <span class="arithmatex">\(w(p'_{i,j}) &lt; w(p_{i,j})\)</span>，则 <span class="arithmatex">\(\langle v_0 \stackrel{p_{0,i}}{\rightsquigarrow} v_i \stackrel{p'_{i,j}}{\rightsquigarrow} v_j \stackrel{p_{j,k}}{\rightsquigarrow} v_k \rangle\)</span> 是一条从 <span class="arithmatex">\(v_0\)</span> 到 <span class="arithmatex">\(v_k\)</span> 的权重为 <span class="arithmatex">\(w(p_{0,i}) + w(p'_{i,j}) + w(p_{j,k}) &lt; w(p)\)</span> 的路径，这与 <span class="arithmatex">\(p\)</span> 是从 <span class="arithmatex">\(v_0\)</span> 到 <span class="arithmatex">\(v_k\)</span> 的一条最短路径这一前提矛盾。</p>
+</details>
+</div>
+<p>接着，我们探讨一个重要的问题：最短路径可以包含环吗？</p>
+<div class="admonition question">
+<p class="admonition-title">最短路径可以包含环吗？</p>
+<p>我们分三种情况来探讨这个问题：</p>
+<ul>
+<li>首先，某些最短路径问题可以包括权重为负值的边，但如果输入图不存在从节点 <span class="arithmatex">\(u\)</span> 可达的负权重环，则对于所有的节点 <span class="arithmatex">\(v\)</span>，最短路径权重 <span class="arithmatex">\(\delta(u, v)\)</span> 都有明确定义，即使其取值可能是负数。如果输入图包含从 <span class="arithmatex">\(u\)</span> 可达的负权重环，那么最短路径权重就没有明确定义。从 <span class="arithmatex">\(u\)</span> 到该环上的任意节点的路径都不可能是最短路径，因为我们只要沿着任何 “最短” 路径再遍历一次这个负权重环，总是可以找到一条权重更小的路径。如果从 <span class="arithmatex">\(u\)</span> 到 <span class="arithmatex">\(v\)</span> 的某条路径上存在负权重环，我们定义 <span class="arithmatex">\(\delta(u, v) = -\infty\)</span>。</li>
+<li>其次，最短路径不可能包含正权重环，因为只要将正权重环从路径上删除就可以得到一条权重更小的路径。也就是说，如果 <span class="arithmatex">\(p = \langle v_0 \stackrel{e_1}{\rightarrow} v_1 \cdots \stackrel{e_k}{\rightarrow} v_k \rangle\)</span> 是节点 <span class="arithmatex">\(v_0\)</span> 到节点 <span class="arithmatex">\(v_k\)</span> 的一条最短路径，<span class="arithmatex">\(c = \langle v_i \stackrel{e_{i+1}}{\rightarrow} v_{i+1} \cdots \stackrel{e_j}{\rightarrow} v_j \rangle\)</span> 是该路径上的一个正权重环（即 <span class="arithmatex">\(v_i = v_j\)</span> 并且 <span class="arithmatex">\(w(c) &gt; 0\)</span>），则路径 <span class="arithmatex">\(p' = \langle v_0 \stackrel{e_1}{\rightarrow} v_1 \cdots \stackrel{e_i}{\rightarrow} v_i \stackrel{e_{j+1}}{\rightarrow} v_{j+1} \stackrel{e_{j+2}}{\rightarrow} v_{j+2} \cdots \stackrel{e_k}{\rightarrow} v_k \rangle\)</span> 的权重 <span class="arithmatex">\(w(p') = w(p) - w(c) &lt; w(p)\)</span>，这与 <span class="arithmatex">\(p\)</span> 是最短路径这一前提矛盾。</li>
+<li>最后，我们讨论零权重环。我们可以从任何路径上删除零权重环而得到另一条权重相同的路径。因此，如果从节点 <span class="arithmatex">\(s\)</span> 到节点 <span class="arithmatex">\(v\)</span> 存在一条含零权重环的最短路径，则也同时存在另一条不包含该环的从 <span class="arithmatex">\(u\)</span> 到 <span class="arithmatex">\(v\)</span> 的最短路径。只要一条最短路径上还有零权重环，我们就可以不断地删除这些环，直到得到一条不包括任何零权重环的最短路径。</li>
+</ul>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">重要假设</p>
+<p>为简化问题，我们在最短路径问题中只考虑 <strong>简单路径</strong>，即最短路径上不允许出现重复的节点。在这种情况下，我们可以不失一般性地假设输入图不包含 <strong>多重边</strong>。如果输入图中存在从节点 <span class="arithmatex">\(u\)</span> 到节点 <span class="arithmatex">\(v\)</span> 的多重边，可以只保留其中权重最小的那条，而不会影响最短路径的计算。因此，每条边都可以唯一地表示为 <span class="arithmatex">\((u, v)\)</span>，其权重也可以写成 <span class="arithmatex">\(w(u, v)\)</span>。</p>
+</div>
+<p>由于在存在负权重环的图中寻找最短简单路径依然是 <strong>NP 难</strong> 的<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>，因此现有多项式时间的最短路径算法都对输入图有特殊的要求。一些算法（如 Dijkstra 算法）要求输入图的所有的边权重均为非负值。另外一些算法（如 Bellman-Ford 算法、Floyd-Warshall 算法、Johnson 算法）则允许输入图中包含负权重边，且只要没有从源点可达的负权重环，这些算法就能找到正确的最短路径。即使输入图中存在从源点可达的负权重环，这些算法也可以检测到负权重环的存在。</p>
+<h2 id="3-%E6%9C%89%E5%90%91%E5%9B%BE%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">3. 有向图的数据结构</h2>
+<p>许多最短路径算法需要 <strong>邻接表</strong> 数据结构来表示带权重的有向图 <span class="arithmatex">\(G = (V, E)\)</span>。在邻接表中，边集 <span class="arithmatex">\(E\)</span> 根据每条边的起点划分为 <span class="arithmatex">\(|V|\)</span> 个子集。对于每个节点 <span class="arithmatex">\(u \in V\)</span>，子集 <span class="arithmatex">\(A[u]\)</span> 包含所有从节点 <span class="arithmatex">\(u\)</span> 发出的边。</p>
+<p>在本系列文章的算法源代码中，我们使用如下数据结构来表示带权重的有向图：</p>
+<ul>
+<li>我们使用整数 <span class="arithmatex">\(0, 1, \dots, n - 1\)</span> 对节点进行编号，其中 <span class="arithmatex">\(n = |V|\)</span> 是节点的数量；</li>
+<li>在代码中，我们不显式使用权重函数 <span class="arithmatex">\(w : E \rightarrow \mathbb{R}\)</span>，而是将权重看作是边的一个属性。每条边 <span class="arithmatex">\((u, v) \in E\)</span> 用一个三元组 <code>(u, v, w)</code> 表示，其中 <code>w</code> 为边 <span class="arithmatex">\((u, v)\)</span> 的权重，而从节点 <span class="arithmatex">\(u \in V\)</span> 发出的每条边 <span class="arithmatex">\((u, v) \in A[u]\)</span> 用一个二元组 <code>(v, w)</code> 表示，省去这条边的起点信息。</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:1"><input checked="checked" id="3-%E6%9C%89%E5%90%91%E5%9B%BE%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E5%9B%BE" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="3-%E6%9C%89%E5%90%91%E5%9B%BE%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E5%9B%BE"><span class="twemoji big-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 5.37-.44-.06L6 14.9c.24.21.4.48.47.78h11.06c.07-.3.23-.57.47-.78l-5.56-9.59-.44.06M6.6 16.53l4.28 2.53c.29-.27.69-.43 1.12-.43.43 0 .83.16 1.12.43l4.28-2.53H6.6M12 22a1.68 1.68 0 0 1-1.68-1.68l.09-.56-4.3-2.55c-.31.36-.76.58-1.27.58a1.68 1.68 0 0 1-1.68-1.68c0-.79.53-1.45 1.26-1.64V9.36c-.83-.11-1.47-.82-1.47-1.68A1.68 1.68 0 0 1 4.63 6c.55 0 1.03.26 1.34.66l4.41-2.53-.06-.45c0-.93.75-1.68 1.68-1.68.93 0 1.68.75 1.68 1.68l-.06.45 4.41 2.53c.31-.4.79-.66 1.34-.66a1.68 1.68 0 0 1 1.68 1.68c0 .86-.64 1.57-1.47 1.68v5.11c.73.19 1.26.85 1.26 1.64a1.68 1.68 0 0 1-1.68 1.68c-.51 0-.96-.22-1.27-.58l-4.3 2.55.09.56A1.68 1.68 0 0 1 12 22M10.8 4.86 6.3 7.44l.02.24c0 .71-.44 1.32-1.06 1.57l.03 5.25 5.51-9.64m2.4 0 5.51 9.64.03-5.25c-.62-.25-1.06-.86-1.06-1.57l.02-.24-4.5-2.58Z"/></svg></span> 图</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename"><code>shortest-path-problem/graph.h</code></span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="cp">#ifndef GRAPH_H</span>
+<span class="cp">#define GRAPH_H</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Graph</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">tuple</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">E</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">A</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">Graph</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">n</span><span class="p">(</span><span class="n">n</span><span class="p">),</span><span class="w"> </span><span class="n">E</span><span class="p">(),</span><span class="w"> </span><span class="n">A</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">add_edge</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">E</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">);</span>
+<span class="w">    </span><span class="n">A</span><span class="p">[</span><span class="n">u</span><span class="p">].</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">clear</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">E</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">A</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="p">{});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">inf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;::</span><span class="n">infinity</span><span class="p">();</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">nil</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+
+<span class="cp">#endif</span>
+</code></pre></div></td></tr></table></div>
+</div>
+</div>
+</div>
+<h2 id="4-%E7%BA%BF%E6%80%A7%E8%A7%84%E5%88%92%E6%A8%A1%E5%9E%8B">4. 线性规划模型</h2>
+<p>最后，我们从线性规划的角度探讨一下最短路径问题。为简化叙述，我们考虑有向图上的单源点最短路径问题，将这个问题看作是在图上寻找将总量为 <span class="arithmatex">\(|V| - 1\)</span> 的流量从源点 <span class="arithmatex">\(s\)</span> 送到其他节点的 <strong>最小费用流问题</strong><sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>，其中每条边 <span class="arithmatex">\((u, v) \in E\)</span> 的 <strong>单位费用</strong> <span class="arithmatex">\(w_{u, v}\)</span> 等于其权重 <span class="arithmatex">\(w(u, v)\)</span>。最优解决方案将只使用源点到其他节点的最短路径，并且总费用等于这些最短路径权重的总和。</p>
+<p>对每条边 <span class="arithmatex">\((u, v) \in E\)</span>，我们引入决策变量 <span class="arithmatex">\(x_{u,v}\)</span> 表示从节点 <span class="arithmatex">\(u\)</span> 向节点 <span class="arithmatex">\(v\)</span> 发送的流量，该问题的线性规划模型如下：</p>
+<div class="arithmatex">\[\begin{align*}
+\text{min} \quad &amp; \sum_{(u,v) \in E} w_{u,v} x_{u,v} \\
+\text{s.t.} \quad &amp; \sum_{(u,s) \in E} x_{u,s} - \sum_{(s, u) \in E} x_{s,u} = 1 - |V|; \\
+                  &amp; \sum_{(u,v) \in E} x_{u,v} - \sum_{(v, u) \in E} x_{v,u} = 1, &amp;&amp; \forall v \in V \setminus \{s\}; \\
+                  &amp; x_{u,v} \ge 0, &amp;&amp; \forall (u, v) \in E.
+\end{align*}\]</div>
+<p>这里，我们没有将 <span class="arithmatex">\(x_{u,v}\)</span> 定义为整数变量，而是允许它发送任意非负值的流量。这是合法的，因为这个线性规划的最优解必定是整数解。</p>
+<p>现在，为主问题的每条约束，即每个节点 <span class="arithmatex">\(v \in V\)</span>，引入对偶变量 <span class="arithmatex">\(y_v\)</span>。因为主问题中每条约束都是等式约束，因此 <span class="arithmatex">\(y_v\)</span> 的定义域是 <span class="arithmatex">\(\mathbb{R}\)</span>。对于主问题的每个决策变量，即每条边 <span class="arithmatex">\((u, v) \in E\)</span>，观察主问题中的所有约束，不难看出对应的对偶约束为 <span class="arithmatex">\(y_v - y_u \le w_{u, v}\)</span>。完整的对偶模型如下：</p>
+<div class="arithmatex">\[\begin{align*}
+\text{max} \quad &amp; \sum_{v \in V \setminus \{s\}} (y_v - y_s) \\
+\text{s.t.} \quad &amp; y_v - y_u \le w_{u,v}, &amp;&amp; \forall (u, v) \in E; \\
+                 &amp; y_v \in \mathbb{R}, &amp;&amp; \forall v \in V.
+\end{align*}\]</div>
+<p>不妨令 <span class="arithmatex">\(y_s = 0\)</span>，等价于在主问题中省去源点 <span class="arithmatex">\(s\)</span> 的流量约束<sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup>。此时对偶问题等同于在问：如果把每条边都看作是长度等于其权重的线，固定源点 <span class="arithmatex">\(s\)</span>，拉扯其他节点使它们尽可能远离 <span class="arithmatex">\(s\)</span>，最远可以拉多远？在对偶问题的最优解 <span class="arithmatex">\(y^*\)</span> 中，对于每个节点 <span class="arithmatex">\(v \in V\)</span>，必然有 <span class="arithmatex">\(y^*_v = \delta(s, v)\)</span>。</p>
+<p>探讨如下两种特殊情况：</p>
+<ul>
+<li>如果某个节点 <span class="arithmatex">\(v\)</span> 从源点 <span class="arithmatex">\(s\)</span> 不可达，那么没有任何约束对 <span class="arithmatex">\(y_v\)</span> 施加上限，就会导致 <span class="arithmatex">\(y^*_v = \infty\)</span>，因此对偶问题无界、主问题无解，即不存在从 <span class="arithmatex">\(s\)</span> 到 <span class="arithmatex">\(v\)</span> 的可行路径，即 <span class="arithmatex">\(\delta(s, v) = \infty\)</span>；</li>
+<li>如果存在从源点 <span class="arithmatex">\(s\)</span> 可达的负权重环 <span class="arithmatex">\(c = \langle v_0 \rightarrow v_1 \cdots \rightarrow v_k \rangle\)</span>，其中 <span class="arithmatex">\(v_0 = v_k\)</span>，将构成该环的所有边对应的对偶约束进行累加，将得到 <span class="arithmatex">\(\sum_{i=1}^k w_{v_{i-1}, v_i} \ge 0\)</span>，这个约束是永远无法被满足的，因此对偶问题无解、主问题无界，即对于任意负权重环上的节点 <span class="arithmatex">\(v\)</span>，有 <span class="arithmatex">\(\delta(s, v) = -\infty\)</span>。</li>
+</ul>
+<h2 id="%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE">参考文献</h2>
+<div class="references">
+<p>Cormen, T. H., Leiserson, C. E., Rivest, R. L., Stein, C. (2022). <em>Introduction to Algorithms</em>. MIT press, 2022.</p>
+</div>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>可以通过对哈密顿路径问题或者最长路径问题进行归约来证明。&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#10548;</a></p>
+</li>
+<li id="fn:2">
+<p>事实上这个模型是 <span class="arithmatex">\(|V| - 1\)</span> 个单节点对最短路径问题的叠加。&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#10548;</a></p>
+</li>
+<li id="fn:3">
+<p>因为所有节点的总入流量等于总出流量，删除一个节点的流量约束不影响模型的正确性。&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#10548;</a></p>
+</li>
+</ol>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="页脚" >
+        
+          
+          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="上一页: 最短路径问题系列">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              <div class="md-ellipsis">
+                最短路径问题系列
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../bellman-ford-algorithm/" class="md-footer__link md-footer__link--next" aria-label="下一页: Bellman-Ford 算法">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              <div class="md-ellipsis">
+                Bellman-Ford 算法
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024
+      <a href="/"> OR Pie </a>
+    </div>
+  
+  
+    <div>
+      Made with
+      <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener"> Material for MkDocs </a>
+    </div>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2m0 2v14h14V5H5m6 2h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2m0 2v6h2V9h-2Z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 7h4a2 2 0 0 1 2 2v2c0 .84-.5 1.55-1.24 1.85L15 17h-2l-1.2-4H11v4H9V7m2 2v2h2V9h-2M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2m0 2v14h14V5H5Z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2M6 7h11v2h-2v5a1 1 0 0 0 1 1 1 1 0 0 0 1-1h2a3 3 0 0 1-3 3 3 3 0 0 1-3-3V9h-3v8H8V9H6"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.copy", "navigation.expand", "navigation.footer", "navigation.indexes", "navigation.tracking", "toc.follow"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+      
+        <script src="../../javascripts/katex.js"></script>
+      
+    
+  </body>
+</html>

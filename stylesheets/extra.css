@@ -1,0 +1,252 @@
+/* Font */
+
+:root {
+  --font-sans-serif: -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  --font-cursive: Baskerville, Georgia, cursive;
+  --font-serif: Palatino, Times, serif;
+  --font-monospace: SFMono-Regular, Consolas, Menlo, sans-serif;
+}
+
+body {
+  --md-text-font-family: var(--font-sans-serif);
+  --md-code-font-family: var(--font-monospace);
+}
+
+/* Logo */
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  height: 2rem;
+}
+
+/* Footnote */
+
+:root {
+  --md-footnotes-icon: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m21.5 9.5-1.41 1.42L17 7.83v5.67a6.5 6.5 0 0 1-6.5 6.5H4v-2h6.5c2.5 0 4.5-2 4.5-4.5V7.83l-3.09 3.08L10.5 9.5 16 4l5.5 5.5Z"/></svg>');
+}
+
+.md-copyright__highlight {
+  color: unset;
+}
+
+/* Math */
+
+.katex {
+  font-size: 1.05em;
+}
+
+.md-typeset div.arithmatex {
+  overflow: unset;
+}
+
+.md-typeset div.arithmatex>span {
+  display: block;
+  width: 100%;
+}
+
+/* Paragraph */
+
+.md-typeset {
+  text-align: justify;
+  line-height: 1.8;
+}
+
+.md-typeset>p,
+.md-typeset .admonition p:not(.admonition-title),
+.md-typeset details p {
+  line-break: strict;
+  text-indent: 2em;
+}
+
+/* Reference */
+
+.md-typeset div.references>p {
+  padding-left: 2em;
+  text-indent: -2em;
+  line-height: 1.4;
+  margin: 0.5em 0;
+}
+
+/* Figure */
+
+.md-typeset figure {
+  display: block;
+}
+
+.md-typeset figure img {
+  margin: auto;
+}
+
+.md-typeset figure figcaption {
+  font-family: var(--font-cursive);
+  font-style: normal;
+}
+
+/* Strong */
+
+.md-typeset strong {
+  color: var(--md-primary-fg-color);
+  font-family: var(--font-cursive);
+}
+
+/* Underline */
+
+.md-typeset a.underline {
+  padding: 0.15em 0.25em 0.1em;
+  color: var(--md-typeset-a-color);
+  border-bottom: 1.5px var(--md-typeset-a-color) solid;
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(var(--md-typeset-a-color) 0 0) 100% / 0% no-repeat;
+  transition: 0.5s, background-position 0s, border-bottom-left-radius 0.1s, border-bottom-right-radius 0.1s 0.4s;
+}
+
+.md-typeset .underline:hover {
+  color: var(--md-default-bg-color);
+  border-radius: 4px;
+  background-position: 0%;
+  background-size: 100%;
+}
+
+/* Header */
+
+.md-typeset h1,
+.md-typeset h2 {
+  font-weight: normal;
+  letter-spacing: unset;
+}
+
+/* Admonition */
+
+:root {
+  --md-admonition-icon--success: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2m-2 15-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9Z"/></svg>');
+  --md-admonition-icon--failure: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2c5.53 0 10 4.47 10 10s-4.47 10-10 10S2 17.53 2 12 6.47 2 12 2m3.59 5L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41 15.59 7Z"/></svg>');
+}
+
+.md-typeset .admonition,
+.md-typeset .admonition:focus-within,
+.md-typeset .admonition[class]:focus-within,
+.md-typeset details,
+.md-typeset details:focus-within,
+.md-typeset details[class]:focus-within {
+  box-shadow: none;
+}
+
+.md-typeset .admonition,
+.md-typeset details {
+  margin: 0.8rem 0;
+}
+
+.md-typeset .admonition.classic,
+.md-typeset details.classic {
+  border-width: 0 0 0 4px;
+  box-shadow: var(--md-shadow-z1);
+}
+
+.md-typeset .admonition>:not(.admonition-title):last-child, 
+.md-typeset details>:not(summary):last-child {
+  margin-bottom: 0.64rem;
+}
+
+.md-typeset .admonition>.admonition,
+.md-typeset .admonition>details,
+.md-typeset details>.admonition,
+.md-typeset details>details {
+  margin-left: -0.6rem;
+  margin-right: -0.6rem;
+  border: none;
+  display: block;
+}
+
+/* Tab */
+
+.md-typeset .tabbed-labels>label .twemoji {
+  vertical-align: middle;
+}
+
+.md-typeset .tabbed-labels>label .twemoji.big-icon {
+  font-size: 0.9rem;
+}
+
+/* Code */
+
+.md-typeset p>code,
+.md-typeset p[class]>code,
+.md-typeset ol li>code,
+.md-typeset ul li>code,
+.md-typeset .highlight span.filename>code,
+.md-typeset .tabbed-labels>label code {
+  box-shadow: unset;
+  background-color: unset;
+  font-size: unset;
+  color: unset;
+  padding: unset;
+  word-spacing: -0.3em;
+}
+
+/* C++ */
+
+:root {
+  --md-admonition-icon--cpp: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22.394 6c-.167-.29-.398-.543-.652-.69L12.926.22c-.509-.294-1.34-.294-1.848 0L2.26 5.31c-.508.293-.923 1.013-.923 1.6v10.18c0 .294.104.62.271.91.167.29.398.543.652.69l8.816 5.09c.508.293 1.34.293 1.848 0l8.816-5.09c.254-.147.485-.4.652-.69.167-.29.27-.616.27-.91V6.91c.003-.294-.1-.62-.268-.91zM12 19.11c-3.92 0-7.109-3.19-7.109-7.11 0-3.92 3.19-7.11 7.11-7.11a7.133 7.133 0 0 1 6.156 3.553l-3.076 1.78a3.567 3.567 0 0 0-3.08-1.78A3.56 3.56 0 0 0 8.444 12 3.56 3.56 0 0 0 12 15.555a3.57 3.57 0 0 0 3.08-1.778l3.078 1.78A7.135 7.135 0 0 1 12 19.11zm7.11-6.715h-.79v.79h-.79v-.79h-.79v-.79h.79v-.79h.79v.79h.79zm2.962 0h-.79v.79h-.79v-.79h-.79v-.79h.79v-.79h.79v.79h.79z"/></svg>');
+}
+
+.md-typeset .admonition.cpp>.admonition-title::before,
+.md-typeset details.cpp>summary::before {
+  -webkit-mask-image: var(--md-admonition-icon--cpp);
+  mask-image: var(--md-admonition-icon--cpp);
+}
+
+/* Proof */
+
+:root {
+  --md-admonition-icon--leaf-circle: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2M9.6 17.2c-.22 0-.52-.08-.8-.2l-.57 1.4-1.14-.4.16-.39C8.45 14.59 9.83 11.15 15 10c0 0-6 0-7.95 5.55 0 0-1.05-1.05-1.05-2.25s1.2-3.75 4.2-4.35c.85-.17 1.8-.3 2.74-.45C15.3 8.18 17.57 7.86 18 7c0 0-1.8 10.2-8.4 10.2Z"/></svg>');
+}
+
+.md-typeset .admonition.proof>.admonition-title::before,
+.md-typeset details.proof>summary::before {
+  -webkit-mask-image: var(--md-admonition-icon--leaf-circle);
+  mask-image: var(--md-admonition-icon--leaf-circle);
+}
+
+/* Quote */
+
+.md-typeset .admonition.quote.close>.admonition-title::before,
+.md-typeset details.quote.close>summary::before {
+  transform: rotate(180deg);
+}
+
+.md-typeset .admonition.quote.close>.admonition-title::after,
+.md-typeset details.quote.close>summary::after {
+  content: "";
+  -webkit-mask: var(--md-admonition-icon--quote) center / contain no-repeat;
+  mask: var(--md-admonition-icon--quote) center / contain no-repeat;
+  background-color: #9e9e9e;
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  right: 0.6rem;
+  bottom: 0.625em;
+}
+
+.md-typeset .admonition.quote.close>.admonition-title,
+.md-typeset details.quote.close>summary {
+  padding-right: 2rem;
+}
+
+.md-typeset .admonition.quote.close.classic,
+.md-typeset details.quote.close.classic {
+  border-right-width: 4px;
+}
+
+/* Social */
+
+.md-social__link svg {
+  max-height: unset;
+  vertical-align: text-top;
+}
+
+/* Table */
+
+.md-typeset__table {
+  display: flex;
+  margin: auto;
+  width: fit-content;
+}

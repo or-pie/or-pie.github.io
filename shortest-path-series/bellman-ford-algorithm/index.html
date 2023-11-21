@@ -1,0 +1,1466 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://or-pie.com/shortest-path-series/bellman-ford-algorithm/">
+      
+      
+        <link rel="prev" href="../shortest-path-problem/">
+      
+      
+        <link rel="next" href="../queue-based-bellman-ford-algorithm/">
+      
+      
+      <link rel="icon" href="../../images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.3">
+    
+    
+  
+    <title>Bellman-Ford 算法 - 运筹派</title>
+  
+
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#1-%E7%AE%97%E6%B3%95%E6%80%9D%E6%83%B3" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="运筹派" class="md-header__button md-logo" aria-label="运筹派" data-md-component="logo">
+      
+  <img src="../../images/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            运筹派
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Bellman-Ford 算法
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jinboszu" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="运筹派" class="md-nav__button md-logo" aria-label="运筹派" data-md-component="logo">
+      
+  <img src="../../images/logo.png" alt="logo">
+
+    </a>
+    运筹派
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jinboszu" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5Z"/></svg>
+  
+  <span class="md-ellipsis">
+    主页
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 15a3 3 0 0 1 3 3 3 3 0 0 1-3 3 2.99 2.99 0 0 1-2.83-2H14v-2h1.17c.41-1.17 1.52-2 2.83-2m0 2a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-9a1.43 1.43 0 0 0 1.43-1.43 1.43 1.43 0 1 0-2.86 0A1.43 1.43 0 0 0 18 8m0-5.43a4 4 0 0 1 4 4C22 9.56 18 14 18 14s-4-4.44-4-7.43a4 4 0 0 1 4-4M8.83 17H10v2H8.83A2.99 2.99 0 0 1 6 21a3 3 0 0 1-3-3c0-1.31.83-2.42 2-2.83V14h2v1.17c.85.3 1.53.98 1.83 1.83M6 17a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1M6 3a3 3 0 0 1 3 3c0 1.31-.83 2.42-2 2.83V10H5V8.83A2.99 2.99 0 0 1 3 6a3 3 0 0 1 3-3m0 2a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m5 14v-2h2v2h-2m-4-6H5v-2h2v2Z"/></svg>
+  
+  <span class="md-ellipsis">
+    最短路径问题系列
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            最短路径问题系列
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shortest-path-problem/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 7v2h2v8h2V7h-4Z"/></svg>
+  
+  <span class="md-ellipsis">
+    最短路径问题
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 7v2h4v2h-2a2 2 0 0 0-2 2v4h6v-2h-4v-2h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H9Z"/></svg>
+  
+  <span class="md-ellipsis">
+    Bellman-Ford 算法
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 7v2h4v2h-2a2 2 0 0 0-2 2v4h6v-2h-4v-2h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H9Z"/></svg>
+  
+  <span class="md-ellipsis">
+    Bellman-Ford 算法
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-%E7%AE%97%E6%B3%95%E6%80%9D%E6%83%B3" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. 算法思想
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-%E6%AD%A3%E7%A1%AE%E6%80%A7%E8%AF%81%E6%98%8E" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. 正确性证明
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. 具体实现
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. 完整代码
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE" class="md-nav__link">
+    <span class="md-ellipsis">
+      参考文献
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../queue-based-bellman-ford-algorithm/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 15v-1.5a1.5 1.5 0 0 0-1.5-1.5 1.5 1.5 0 0 0 1.5-1.5V9a2 2 0 0 0-2-2H9v2h4v2h-2v2h2v2H9v2h4a2 2 0 0 0 2-2"/></svg>
+  
+  <span class="md-ellipsis">
+    队列版 Bellman-Ford 算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../negative-weight-cycle-problem/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 7v6h4v4h2V7h-2v4h-2V7H9Z"/></svg>
+  
+  <span class="md-ellipsis">
+    负权重环问题
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dijkstra-algorithm/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 7v6h4v2H9v2h4a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-2V9h4V7H9Z"/></svg>
+  
+  <span class="md-ellipsis">
+    Dijkstra 算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lazy-dijkstra-algorithm/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-2V9h4V7h-4m0 6h2v2h-2v-2Z"/></svg>
+  
+  <span class="md-ellipsis">
+    懒惰 Dijkstra 算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../floyd-warshall-algorithm/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m11 17 4-8V7H9v2h4l-4 8"/></svg>
+  
+  <span class="md-ellipsis">
+    Floyd-Warshall 算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../johnson-algorithm/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 13h2v2h-2m0-6h2v2h-2m0 6h2a2 2 0 0 0 2-2v-1.5a1.5 1.5 0 0 0-1.5-1.5 1.5 1.5 0 0 0 1.5-1.5V9a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v1.5a1.5 1.5 0 0 0 1.5 1.5A1.5 1.5 0 0 0 9 13.5V15a2 2 0 0 0 2 2"/></svg>
+  
+  <span class="md-ellipsis">
+    Johnson 算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../minimum-weight-cycle-problem/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 17a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2H9v2h4m0-6h-2V9h2v2Z"/></svg>
+  
+  <span class="md-ellipsis">
+    最小权重环问题
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../minimum-mean-cycle-problem/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 7a2 2 0 0 0-2 2v8h2v-4h2v4h2V9a2 2 0 0 0-2-2h-2m0 2h2v2h-2V9Z"/></svg>
+  
+  <span class="md-ellipsis">
+    最小均值环问题
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../minimum-ratio-cycle-problem/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 10.5V9a2 2 0 0 0-2-2H9v10h4a2 2 0 0 0 2-2v-1.5c0-.8-.7-1.5-1.5-1.5.8 0 1.5-.7 1.5-1.5M13 15h-2v-2h2v2m0-4h-2V9h2v2Z"/></svg>
+  
+  <span class="md-ellipsis">
+    最小比例环问题
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basic-cyclic-scheduling-problem/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-1h-2v1h-2V9h2v1h2V9a2 2 0 0 0-2-2h-2Z"/></svg>
+  
+  <span class="md-ellipsis">
+    基本周期调度问题
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-%E7%AE%97%E6%B3%95%E6%80%9D%E6%83%B3" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. 算法思想
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-%E6%AD%A3%E7%A1%AE%E6%80%A7%E8%AF%81%E6%98%8E" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. 正确性证明
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. 具体实现
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. 完整代码
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE" class="md-nav__link">
+    <span class="md-ellipsis">
+      参考文献
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+  <h1>Bellman-Ford 算法</h1>
+
+<div class="admonition quote close classic">
+<p class="admonition-title">Bellman-Ford 算法是一种解决包含负权重边的有向图上的单源点最短路径问题的算法。</p>
+</div>
+<h2 id="1-%E7%AE%97%E6%B3%95%E6%80%9D%E6%83%B3">1. 算法思想</h2>
+<p>给定有向图 <span class="arithmatex">\(G = (V, E)\)</span> 和权重函数 <span class="arithmatex">\(w : E \rightarrow \mathbb{R}\)</span>，Bellman-Ford 算法返回一个布尔值以表明是否存在一个从给定源点 <span class="arithmatex">\(s\)</span> 可达的负权重环。如果存在这样的环，算法将返回 <code>false</code>。否则，算法将返回 <code>true</code>，并且给出源点 <span class="arithmatex">\(s\)</span> 到任意节点的最短路径和它们的权重。</p>
+<p>首先，对于每个节点 <span class="arithmatex">\(v \in V\)</span>，我们维持一个属性 <span class="arithmatex">\(dist[v]\)</span>，即从源点 <span class="arithmatex">\(s\)</span> 到 <span class="arithmatex">\(v\)</span> 的 <strong>最短路径估计值</strong>，用来记录从 <span class="arithmatex">\(s\)</span> 到 <span class="arithmatex">\(v\)</span> 的最短路径权重的上界。我们还需要维持一个属性 <span class="arithmatex">\(prev[v]\)</span>，用来记录 <span class="arithmatex">\(v\)</span> 在从 <span class="arithmatex">\(s\)</span> 到 <span class="arithmatex">\(v\)</span> 的最短路径上的 <strong>前驱节点</strong>。我们使用下面的算法来对最短路径估计值和前驱节点进行初始化，在初始化操作结束后，所有节点的前驱节点都是 <span class="arithmatex">\(nil\)</span>（表示 “无”），源点 <span class="arithmatex">\(s\)</span> 的最短路径估计值为 <span class="arithmatex">\(0\)</span>，其他节点的最短路径估计值为 <span class="arithmatex">\(\infty\)</span>。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">初始化</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">dist</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">inf</span><span class="p">);</span>
+<span class="w">  </span><span class="n">prev</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">nil</span><span class="p">);</span>
+<span class="w">  </span><span class="n">dist</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>Bellman-Ford 算法用到了 <strong>松弛</strong><sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> 这个概念。对一条边 <span class="arithmatex">\((u, v)\)</span> 的松弛过程为：首先测试一下是否可以对从 <span class="arithmatex">\(s\)</span> 到 <span class="arithmatex">\(v\)</span> 的最短路径进行改善。测试的方法是，将从 <span class="arithmatex">\(s\)</span> 到 <span class="arithmatex">\(u\)</span> 的最短路径估计值加上从 <span class="arithmatex">\(u\)</span> 到 <span class="arithmatex">\(v\)</span> 的边权重，与当前的 <span class="arithmatex">\(s\)</span> 到 <span class="arithmatex">\(v\)</span> 的最短路径估计值进行比较，如果前者更小，则对 <span class="arithmatex">\(dist[v]\)</span> 和 <span class="arithmatex">\(prev[v]\)</span> 进行更新。通过这种方式，松弛步骤可能降低最短路径的估计值 <span class="arithmatex">\(dist[v]\)</span> 并更新 <span class="arithmatex">\(v\)</span> 的前驱属性 <span class="arithmatex">\(prev[v]\)</span>。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">松弛操作</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">bool</span><span class="w"> </span><span class="nf">relax</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">w</span><span class="p">;</span>
+<span class="w">    </span><span class="n">prev</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">u</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<div class="admonition example cpp">
+<p class="admonition-title">代码说明</p>
+<p>在代码中，我们不直接使用权重函数 <span class="arithmatex">\(w : E \rightarrow \mathbb{R}\)</span>，而是传入对应边的权重值。</p>
+</div>
+<p>Bellman-Ford 算法通过不断对边进行松驰操作来逐渐地降低从源点 <span class="arithmatex">\(s\)</span> 到每个节点 <span class="arithmatex">\(v \in V\)</span> 的最短路径估计值 <span class="arithmatex">\(dist[v]\)</span>，直到该估计值与实际的最短路径权重 <span class="arithmatex">\(\delta(s, v)\)</span> 相同为止。该算法返回 <code>true</code> 当且仅当输入图不存在从源点可达的负权重环。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Bellman-Ford 算法思想</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">bool</span><span class="w"> </span><span class="nf">bellman_ford</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Graph</span><span class="w"> </span><span class="o">&amp;</span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">initialize</span><span class="p">(</span><span class="n">G</span><span class="p">.</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">);</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">G</span><span class="p">.</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">]</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">G</span><span class="p">.</span><span class="n">E</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">relax</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">]</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">G</span><span class="p">.</span><span class="n">E</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">relax</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>下图描述的是在有 5 个节点的图上运行 Bellman-Ford 算法的过程。在算法第 2 行对所有节点的 <span class="arithmatex">\(dist\)</span> 值和 <span class="arithmatex">\(prev\)</span> 值进行初始化后，算法对图的边进行 <span class="arithmatex">\(|V| - 1\)</span> 轮处理。每一轮处理对应的是算法第 3–7 行的 <code>for</code> 循环的一轮操作，该循环的每一轮对图的每条边进行一次松驰操作。子图 (b)–(e) 描述的是前 4 轮处理后的算法状态。在进行了 <span class="arithmatex">\(|V| - 1\)</span> 轮松驰操作后算法第 8–13 行负责检查输入图中是否存在负权重环并返回与之相适应的布尔值。</p>
+<figure>
+<p><img alt="" src="../bellman-ford-algorithm-example.png" /></p>
+<figcaption>
+<p><b>Bellman-Ford 算法的执行过程：</b>源点为 <span class="arithmatex">\(s\)</span>，节点中的数值为该节点的最短路径估计值，蓝色边表明前驱信息：如果边 <span class="arithmatex">\((u, v)\)</span> 是蓝色的，则 <span class="arithmatex">\(dist[v] = u\)</span>。在本图的例子中，每一轮的松弛操作对边的处理次序都是 <span class="arithmatex">\((t, x)\)</span>, <span class="arithmatex">\((t, y)\)</span>, <span class="arithmatex">\((t, z)\)</span>, <span class="arithmatex">\((x, t)\)</span>, <span class="arithmatex">\((y, x)\)</span>, <span class="arithmatex">\((y, z)\)</span>, <span class="arithmatex">\((z, x)\)</span>, <span class="arithmatex">\((z, s)\)</span>, <span class="arithmatex">\((s, t)\)</span>, <span class="arithmatex">\((s, y)\)</span>。子图 (a) 为第 1 轮松弛前的场景。子图 (b)–(e) 为每轮松弛操作后的场景。子图 (e) 中节点的 <span class="arithmatex">\(dist\)</span> 值和前驱信息为最终值。在本例中，Bellman-Ford 算法返回值为 <code>true</code>。</p>
+</figcaption>
+</figure>
+<p>Bellman-Ford 算法第 2 行的初始化操作所需时间为 <span class="arithmatex">\(O(|V|)\)</span>，第 3–7 行的 <code>for</code> 循环一共要执行 <span class="arithmatex">\(|V| - 1\)</span> 轮，每一轮运行时间为 <span class="arithmatex">\(O(|E|)\)</span>，第 8–13 行检查的运行时间为 <span class="arithmatex">\(O(|E|)\)</span>，因此算法的总运行时间为 <span class="arithmatex">\(O(|V| |E|)\)</span>。</p>
+<h2 id="2-%E6%AD%A3%E7%A1%AE%E6%80%A7%E8%AF%81%E6%98%8E">2. 正确性证明</h2>
+<p>回顾<a class="underline" href="../shortest-path-problem/#2-最短路径的性质">最短路径问题的最优子结构</a>，得到最短路径的 <strong>传递性质</strong>。</p>
+<div class="admonition note">
+<p class="admonition-title">传递性质</p>
+<p>假设 <span class="arithmatex">\(p = \langle s \rightsquigarrow u \rightarrow v\rangle\)</span> 是源点 <span class="arithmatex">\(s\)</span> 到节点 <span class="arithmatex">\(v\)</span> 的一条最短路径，那么 <span class="arithmatex">\(\delta(s, v) = \delta(s, u) + w(u, v)\)</span>。</p>
+</div>
+<p>进一步地，我们有如下 <strong>三角形不等式</strong>，它与<a class="underline" href="../shortest-path-problem/#4-线性规划模型">最短路径问题的对偶问题</a>中的约束具有相同的形式。</p>
+<div class="admonition note">
+<p class="admonition-title">三角形不等式</p>
+<p>对于每条边 <span class="arithmatex">\((u, v) \in E\)</span>，总是有 <span class="arithmatex">\(\delta(s, v) \le \delta(s, u) + w(u, v)\)</span>。</p>
+</div>
+<p>首先，我们证明在 Bellman-Ford 算法运行过程中，对于任意节点 <span class="arithmatex">\(v \in V\)</span>，<span class="arithmatex">\(dist[v]\)</span> 总是 <span class="arithmatex">\(\delta(s, v)\)</span> 的上界。</p>
+<div class="admonition tip">
+<p class="admonition-title">上界性质</p>
+<p>在 Bellman-Ford 算法运行过程中，对于所有节点 <span class="arithmatex">\(v \in V\)</span>，总是有 <span class="arithmatex">\(dist[v] \ge \delta(s, v)\)</span>。</p>
+<details class="success proof" open="open">
+<summary>证明</summary>
+<p>使用归纳法进行证明。</p>
+<ul>
+<li><b>基础步：</b>在初始化之后，对于所有节点 <span class="arithmatex">\(v \in V\)</span>，有 <span class="arithmatex">\(dist[v] = \infty\)</span>，显然 <span class="arithmatex">\(dist[v] \ge \delta(s, v)\)</span>；</li>
+<li><b>归纳步：</b>在对边 <span class="arithmatex">\((u, v)\)</span> 进行松弛操作时，唯一可能发生变化的值是 <span class="arithmatex">\(dist[v] = dist[u] + w(u, v) \ge \delta(s, u) + w(u, v) \ge \delta(s, v)\)</span>。</li>
+</ul>
+</details>
+</div>
+<p>接着，我们证明松弛操作可以让 <span class="arithmatex">\(dist[v]\)</span> 向 <span class="arithmatex">\(\delta(s, v)\)</span> 收敛。</p>
+<div class="admonition tip">
+<p class="admonition-title">收敛性质</p>
+<p>假设 <span class="arithmatex">\(\langle s \rightsquigarrow u \rightarrow v\rangle\)</span> 是源点 <span class="arithmatex">\(s\)</span> 到节点 <span class="arithmatex">\(v\)</span> 的一条最短路径，且在对边 <span class="arithmatex">\((u, v)\)</span> 进行松弛前有 <span class="arithmatex">\(dist[u] = \delta(s, u)\)</span>，那么在松弛后我们将得到 <span class="arithmatex">\(dist[v] = \delta(s, v)\)</span>。</p>
+<details class="success proof" open="open">
+<summary>证明</summary>
+<p>显然，在上述条件下，我们有 <span class="arithmatex">\(dist[v] \le dist[u] + w(u, v) = \delta(s, u) + w(u, v) = \delta(s, v)\)</span>。因为 <span class="arithmatex">\(dist[v]\)</span> 是 <span class="arithmatex">\(\delta(s, v)\)</span> 的上界，于是我们得到了 <span class="arithmatex">\(dist[v] = \delta(s, v)\)</span>。</p>
+</details>
+</div>
+<p>最后，我们证明 Bellman-Ford 算法的正确性。</p>
+<div class="admonition tip">
+<p class="admonition-title">算法正确性</p>
+<p>如果输入图中不存在从源点 <span class="arithmatex">\(s\)</span> 可达的负权重环，那么 Bellman-Ford 算法将返回 <code>true</code>，且对所有节点 <span class="arithmatex">\(v \in V\)</span>，都有 <span class="arithmatex">\(dist[v] = \delta(s, v)\)</span>；否则，Bellman-Ford 算法将返回 <code>false</code>。</p>
+<details class="success proof" open="open">
+<summary>证明</summary>
+<p>首先讨论不存在从源点 <span class="arithmatex">\(s\)</span> 可达的负权重环的情况。考虑任意节点 <span class="arithmatex">\(v \in V\)</span> 和从源点 <span class="arithmatex">\(s\)</span> 到 <span class="arithmatex">\(v\)</span> 的任意一条最短路径 <span class="arithmatex">\(p = \langle v_0, v_1, \dots, v_k\rangle\)</span>，其中 <span class="arithmatex">\(v_0 = s\)</span>、<span class="arithmatex">\(v_k = v\)</span>。注意，我们只考虑最短简单路径，因此 <span class="arithmatex">\(k \le |V| - 1\)</span>。Bellman-Ford 算法的每一轮都会对所有边进行松弛操作，因此边 <span class="arithmatex">\((v_{inil}, v_i)\)</span> 一定会在循环的第 <span class="arithmatex">\(i\)</span> 轮（<span class="arithmatex">\(1 \le i \le k\)</span>）进行松弛。根据收敛性质，在所有松弛操作之后，必然有 <span class="arithmatex">\(dist[v] = \delta(s, v)\)</span>。</p>
+<p>如果存在从源点 <span class="arithmatex">\(s\)</span> 可达的负权重环，那么在 <span class="arithmatex">\(|V| - 1\)</span> 轮松弛操作后，必然有节点的 <span class="arithmatex">\(dist\)</span> 值未达到其最短路径权重（因为它们的最短路径权重是 <span class="arithmatex">\(-\infty\)</span>），还能找到能够成功松弛的边，因此算法的第 10 行将返回 <code>false</code>。</p>
+</details>
+</div>
+<p>在 Bellman-Ford 算法中，我们执行了 <span class="arithmatex">\(|V| - 1\)</span> 轮松弛操作，覆盖了所有可能的最短简单路径。注意，每一轮的松弛操作顺序可以不同，这不影响算法的正确性。</p>
+<h2 id="3-%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0">3. 具体实现</h2>
+<p>思考下面这些问题：</p>
+<ul>
+<li>Bellman-Ford 算法必须要执行完 <span class="arithmatex">\(|V| - 1\)</span> 轮松弛操作才能结束吗？其实只要在某轮循环中发现对所有边进行松弛操作都没能改变任何节点的最短路径估计值，那么算法可以立刻返回 <code>true</code>，因为已经找到了源点到所有节点的最短路径。还有一种特殊的情况，如果在某次松弛后发现 <span class="arithmatex">\(dist[s] &lt; 0\)</span>，那么算法可以立刻返回 <code>false</code>，因为算法检测到一个包含源点 <span class="arithmatex">\(s\)</span> 的负权重环。</li>
+<li>如果 Bellman-Ford 算法返回 <code>true</code>，如何重构最短路径？重构从源点 <span class="arithmatex">\(s\)</span> 到给定节点 <span class="arithmatex">\(v \in V\)</span> 的最短路径不是难事。如果 <span class="arithmatex">\(\delta(s, v) \neq \infty\)</span>，可以利用节点的前驱信息，回溯构造从源点 <span class="arithmatex">\(s\)</span> 到节点 <span class="arithmatex">\(v \in V\)</span> 的最短路径。否则，不存在从源点 <span class="arithmatex">\(s\)</span> 到节点 <span class="arithmatex">\(v\)</span> 的路径。</li>
+<li>如果 Bellman-Ford 算法返回 <code>false</code>，如何重构负权重环？在 Bellman-Ford 算法中，我们可以在算法返回 <code>false</code> 前，用变量 <code>clue</code> 记录最后一条成功松弛的边的终点。从该节点开始回溯访问前驱节点，直到发现某个节点现了两次，这两次出现位置之间的所有边组成了一个负权重环。注意，变量 <code>clue</code> 所记录的节点可能并不在我们构造出来的负权重环之中。</li>
+</ul>
+<p>根据上面的讨论，我们对 Bellman-Ford 算法进行如下改进，并给出了重构最短路径和负权重环的方法。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Bellman-Ford 算法</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">bool</span><span class="w"> </span><span class="nf">relax</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">w</span><span class="p">;</span>
+<span class="w">    </span><span class="n">prev</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">u</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="nf">bellman_ford</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Graph</span><span class="w"> </span><span class="o">&amp;</span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">dist</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">G</span><span class="p">.</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">inf</span><span class="p">);</span>
+<span class="w">  </span><span class="n">prev</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">G</span><span class="p">.</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">nil</span><span class="p">);</span>
+<span class="w">  </span><span class="n">dist</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">G</span><span class="p">.</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">relaxed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">]</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">G</span><span class="p">.</span><span class="n">E</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">relax</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">relaxed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="n">clue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
+<span class="w">          </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">not</span><span class="w"> </span><span class="n">relaxed</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">clue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nil</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">]</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">G</span><span class="p">.</span><span class="n">E</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">relax</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">clue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">clue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nil</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">重构最短路径</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">reconstruct_shortest_path</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">clue</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">nil</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">inf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{};</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">p</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">nil</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prev</span><span class="p">[</span><span class="n">x</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">p</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">reverse</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">p</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">重构负权重环</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">reconstruct_negative_weight_cycle</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">clue</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">nil</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{};</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">aux</span><span class="p">(</span><span class="n">prev</span><span class="p">.</span><span class="n">size</span><span class="p">(),</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">p</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clue</span><span class="p">;</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="k">not</span><span class="w"> </span><span class="n">aux</span><span class="p">[</span><span class="n">x</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">aux</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">      </span><span class="n">p</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="w">      </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prev</span><span class="p">[</span><span class="n">x</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">x</span><span class="p">};</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">rbegin</span><span class="p">();</span><span class="w"> </span><span class="o">*</span><span class="n">it</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"> </span><span class="n">it</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">c</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="o">*</span><span class="n">it</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">c</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">c</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>事实上，如果输入图中的最短路径最多包含 <span class="arithmatex">\(m\)</span> 条边（我们通常无法事先知道这个值），那么 Bellman-Ford 算法最迟会在 <span class="arithmatex">\(m + 1\)</span> 轮松弛操作之后结束。在一般情况下，算法可能会更早结束。在 “运气爆棚” 的极限情况下，Bellman-Ford 算法只需要 2 轮循环：第 1 轮，严格按照最短路径的拓扑顺序进行松弛操作，那么这一轮结束后，对所有节点 <span class="arithmatex">\(v \in V\)</span> 都有 <span class="arithmatex">\(dist[v] = \delta(s, v)\)</span>，接着算法在第 2 轮发现所有松弛操作都失败后，算法直接返回 <code>true</code>。</p>
+<h2 id="4-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81">4. 完整代码</h2>
+<p>我们通过上图的简单例子对算法进行测试，完整代码如下。</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="4-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81-%E4%B8%BB%E7%A8%8B%E5%BA%8F" name="__tabbed_1" type="radio" /><input id="4-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81-Bellman-Ford-%E7%AE%97%E6%B3%95" name="__tabbed_1" type="radio" /><input id="4-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81-%E5%9B%BE" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="4-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81-%E4%B8%BB%E7%A8%8B%E5%BA%8F"><span class="twemoji big-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m0-18A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2m-2 14.5 6-4.5-6-4.5v9Z"/></svg></span> 主程序</label><label for="4-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81-Bellman-Ford-%E7%AE%97%E6%B3%95"><span class="twemoji big-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m0 16H5V5h14v14M6.2 7.7h5v1.5h-5V7.7m6.8 8.1h5v1.5h-5v-1.5m0-2.6h5v1.5h-5v-1.5M8 18h1.5v-2h2v-1.5h-2v-2H8v2H6V16h2v2m6.1-7.1 1.4-1.4 1.4 1.4 1.1-1-1.4-1.4L18 7.1 16.9 6l-1.4 1.4L14.1 6 13 7.1l1.4 1.4L13 9.9l1.1 1Z"/></svg></span> Bellman-Ford 算法</label><label for="4-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81-%E5%9B%BE"><span class="twemoji big-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 5.37-.44-.06L6 14.9c.24.21.4.48.47.78h11.06c.07-.3.23-.57.47-.78l-5.56-9.59-.44.06M6.6 16.53l4.28 2.53c.29-.27.69-.43 1.12-.43.43 0 .83.16 1.12.43l4.28-2.53H6.6M12 22a1.68 1.68 0 0 1-1.68-1.68l.09-.56-4.3-2.55c-.31.36-.76.58-1.27.58a1.68 1.68 0 0 1-1.68-1.68c0-.79.53-1.45 1.26-1.64V9.36c-.83-.11-1.47-.82-1.47-1.68A1.68 1.68 0 0 1 4.63 6c.55 0 1.03.26 1.34.66l4.41-2.53-.06-.45c0-.93.75-1.68 1.68-1.68.93 0 1.68.75 1.68 1.68l-.06.45 4.41 2.53c.31-.4.79-.66 1.34-.66a1.68 1.68 0 0 1 1.68 1.68c0 .86-.64 1.57-1.47 1.68v5.11c.73.19 1.26.85 1.26 1.64a1.68 1.68 0 0 1-1.68 1.68c-.51 0-.96-.22-1.27-.58l-4.3 2.55.09.56A1.68 1.68 0 0 1 12 22M10.8 4.86 6.3 7.44l.02.24c0 .71-.44 1.32-1.06 1.57l.03 5.25 5.51-9.64m2.4 0 5.51 9.64.03-5.25c-.62-.25-1.06-.86-1.06-1.57l.02-.24-4.5-2.58Z"/></svg></span> 图</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename"><code>bellman-ford-algorithm/main.cpp</code></span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;bellman-ford.h&quot;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;stxyz&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">Graph</span><span class="w"> </span><span class="n">G</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">-4</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">-2</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">-3</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">BellmanFord</span><span class="w"> </span><span class="n">BF</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">BF</span><span class="p">.</span><span class="n">bellman_ford</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;从源点 &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; 出发的最短路径：&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">G</span><span class="p">.</span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="n">v</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BF</span><span class="p">.</span><span class="n">reconstruct_shortest_path</span><span class="p">(</span><span class="n">v</span><span class="p">);</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">names</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; (&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">BF</span><span class="p">.</span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;): &quot;</span><span class="p">;</span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">names</span><span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s">&quot;-&gt;&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;存在从源点 &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; 可达的负权重环：&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BF</span><span class="p">.</span><span class="n">reconstruct_negative_weight_cycle</span><span class="p">();</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">names</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s">&quot;-&gt;&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename"><code>bellman-ford-algorithm/bellman-ford.h</code></span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="cp">#ifndef BELLMAN_FORD_H</span>
+<span class="cp">#define BELLMAN_FORD_H</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;graph.h&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">BellmanFord</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dist</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">prev</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">clue</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">relax</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">w</span><span class="p">;</span>
+<span class="w">      </span><span class="n">prev</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">u</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">bellman_ford</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Graph</span><span class="w"> </span><span class="o">&amp;</span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">dist</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">G</span><span class="p">.</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">inf</span><span class="p">);</span>
+<span class="w">    </span><span class="n">prev</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">G</span><span class="p">.</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">nil</span><span class="p">);</span>
+<span class="w">    </span><span class="n">dist</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">G</span><span class="p">.</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kt">bool</span><span class="w"> </span><span class="n">relaxed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">]</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">G</span><span class="p">.</span><span class="n">E</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">relax</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="n">relaxed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">clue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">not</span><span class="w"> </span><span class="n">relaxed</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">clue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nil</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">]</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">G</span><span class="p">.</span><span class="n">E</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">relax</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">clue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">clue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nil</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">reconstruct_shortest_path</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">clue</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">nil</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">inf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="p">{};</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">p</span><span class="p">;</span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">nil</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prev</span><span class="p">[</span><span class="n">x</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">reverse</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">p</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">reconstruct_negative_weight_cycle</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">clue</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">nil</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="p">{};</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">aux</span><span class="p">(</span><span class="n">prev</span><span class="p">.</span><span class="n">size</span><span class="p">(),</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">p</span><span class="p">;</span>
+<span class="w">      </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clue</span><span class="p">;</span>
+<span class="w">      </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="k">not</span><span class="w"> </span><span class="n">aux</span><span class="p">[</span><span class="n">x</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">aux</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="w">        </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prev</span><span class="p">[</span><span class="n">x</span><span class="p">];</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">x</span><span class="p">};</span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">rbegin</span><span class="p">();</span><span class="w"> </span><span class="o">*</span><span class="n">it</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"> </span><span class="n">it</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">c</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="o">*</span><span class="n">it</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="n">c</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">c</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="cp">#endif</span>
+</code></pre></div></td></tr></table></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename"><code>shortest-path-problem/graph.h</code></span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="cp">#ifndef GRAPH_H</span>
+<span class="cp">#define GRAPH_H</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Graph</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">tuple</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">E</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">A</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">Graph</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">n</span><span class="p">(</span><span class="n">n</span><span class="p">),</span><span class="w"> </span><span class="n">E</span><span class="p">(),</span><span class="w"> </span><span class="n">A</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">add_edge</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">E</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">);</span>
+<span class="w">    </span><span class="n">A</span><span class="p">[</span><span class="n">u</span><span class="p">].</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">clear</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">E</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">A</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="p">{});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">inf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;::</span><span class="n">infinity</span><span class="p">();</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">nil</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+
+<span class="cp">#endif</span>
+</code></pre></div></td></tr></table></div>
+</div>
+</div>
+</div>
+<h2 id="%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE">参考文献</h2>
+<div class="references">
+<p>Cormen, T. H., Leiserson, C. E., Rivest, R. L., Stein, C. (2022). <em>Introduction to Algorithms</em>. MIT press, 2022.</p>
+</div>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>松弛，意思就是放松、消除压力。松弛操作的结果就是消除了违反限制条件 <span class="arithmatex">\(dist[v] \le dist[u] + w(u, v)\)</span> 的 “压力”。&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#10548;</a></p>
+</li>
+</ol>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="页脚" >
+        
+          
+          <a href="../shortest-path-problem/" class="md-footer__link md-footer__link--prev" aria-label="上一页: 最短路径问题">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              <div class="md-ellipsis">
+                最短路径问题
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../queue-based-bellman-ford-algorithm/" class="md-footer__link md-footer__link--next" aria-label="下一页: 队列版 Bellman-Ford 算法">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              <div class="md-ellipsis">
+                队列版 Bellman-Ford 算法
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024
+      <a href="/"> OR Pie </a>
+    </div>
+  
+  
+    <div>
+      Made with
+      <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener"> Material for MkDocs </a>
+    </div>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2m0 2v14h14V5H5m6 2h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2m0 2v6h2V9h-2Z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 7h4a2 2 0 0 1 2 2v2c0 .84-.5 1.55-1.24 1.85L15 17h-2l-1.2-4H11v4H9V7m2 2v2h2V9h-2M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2m0 2v14h14V5H5Z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2M6 7h11v2h-2v5a1 1 0 0 0 1 1 1 1 0 0 0 1-1h2a3 3 0 0 1-3 3 3 3 0 0 1-3-3V9h-3v8H8V9H6"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.copy", "navigation.expand", "navigation.footer", "navigation.indexes", "navigation.tracking", "toc.follow"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+      
+        <script src="../../javascripts/katex.js"></script>
+      
+    
+  </body>
+</html>

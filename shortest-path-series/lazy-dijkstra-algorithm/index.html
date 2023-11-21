@@ -1,0 +1,1168 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://or-pie.com/shortest-path-series/lazy-dijkstra-algorithm/">
+      
+      
+        <link rel="prev" href="../dijkstra-algorithm/">
+      
+      
+        <link rel="next" href="../floyd-warshall-algorithm/">
+      
+      
+      <link rel="icon" href="../../images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.3">
+    
+    
+  
+    <title>懒惰 Dijkstra 算法 - 运筹派</title>
+  
+
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#1-%E6%87%92%E6%83%B0-Dijkstra-%E7%AE%97%E6%B3%95" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="运筹派" class="md-header__button md-logo" aria-label="运筹派" data-md-component="logo">
+      
+  <img src="../../images/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            运筹派
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              懒惰 Dijkstra 算法
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jinboszu" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="运筹派" class="md-nav__button md-logo" aria-label="运筹派" data-md-component="logo">
+      
+  <img src="../../images/logo.png" alt="logo">
+
+    </a>
+    运筹派
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jinboszu" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5Z"/></svg>
+  
+  <span class="md-ellipsis">
+    主页
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 15a3 3 0 0 1 3 3 3 3 0 0 1-3 3 2.99 2.99 0 0 1-2.83-2H14v-2h1.17c.41-1.17 1.52-2 2.83-2m0 2a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-9a1.43 1.43 0 0 0 1.43-1.43 1.43 1.43 0 1 0-2.86 0A1.43 1.43 0 0 0 18 8m0-5.43a4 4 0 0 1 4 4C22 9.56 18 14 18 14s-4-4.44-4-7.43a4 4 0 0 1 4-4M8.83 17H10v2H8.83A2.99 2.99 0 0 1 6 21a3 3 0 0 1-3-3c0-1.31.83-2.42 2-2.83V14h2v1.17c.85.3 1.53.98 1.83 1.83M6 17a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1M6 3a3 3 0 0 1 3 3c0 1.31-.83 2.42-2 2.83V10H5V8.83A2.99 2.99 0 0 1 3 6a3 3 0 0 1 3-3m0 2a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m5 14v-2h2v2h-2m-4-6H5v-2h2v2Z"/></svg>
+  
+  <span class="md-ellipsis">
+    最短路径问题系列
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            最短路径问题系列
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shortest-path-problem/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 7v2h2v8h2V7h-4Z"/></svg>
+  
+  <span class="md-ellipsis">
+    最短路径问题
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bellman-ford-algorithm/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 7v2h4v2h-2a2 2 0 0 0-2 2v4h6v-2h-4v-2h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H9Z"/></svg>
+  
+  <span class="md-ellipsis">
+    Bellman-Ford 算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../queue-based-bellman-ford-algorithm/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 15v-1.5a1.5 1.5 0 0 0-1.5-1.5 1.5 1.5 0 0 0 1.5-1.5V9a2 2 0 0 0-2-2H9v2h4v2h-2v2h2v2H9v2h4a2 2 0 0 0 2-2"/></svg>
+  
+  <span class="md-ellipsis">
+    队列版 Bellman-Ford 算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../negative-weight-cycle-problem/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 7v6h4v4h2V7h-2v4h-2V7H9Z"/></svg>
+  
+  <span class="md-ellipsis">
+    负权重环问题
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dijkstra-algorithm/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 7v6h4v2H9v2h4a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-2V9h4V7H9Z"/></svg>
+  
+  <span class="md-ellipsis">
+    Dijkstra 算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-2V9h4V7h-4m0 6h2v2h-2v-2Z"/></svg>
+  
+  <span class="md-ellipsis">
+    懒惰 Dijkstra 算法
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-2V9h4V7h-4m0 6h2v2h-2v-2Z"/></svg>
+  
+  <span class="md-ellipsis">
+    懒惰 Dijkstra 算法
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-%E6%87%92%E6%83%B0-Dijkstra-%E7%AE%97%E6%B3%95" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. 懒惰 Dijkstra 算法
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. 完整代码
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../floyd-warshall-algorithm/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m11 17 4-8V7H9v2h4l-4 8"/></svg>
+  
+  <span class="md-ellipsis">
+    Floyd-Warshall 算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../johnson-algorithm/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 13h2v2h-2m0-6h2v2h-2m0 6h2a2 2 0 0 0 2-2v-1.5a1.5 1.5 0 0 0-1.5-1.5 1.5 1.5 0 0 0 1.5-1.5V9a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v1.5a1.5 1.5 0 0 0 1.5 1.5A1.5 1.5 0 0 0 9 13.5V15a2 2 0 0 0 2 2"/></svg>
+  
+  <span class="md-ellipsis">
+    Johnson 算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../minimum-weight-cycle-problem/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 17a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2H9v2h4m0-6h-2V9h2v2Z"/></svg>
+  
+  <span class="md-ellipsis">
+    最小权重环问题
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../minimum-mean-cycle-problem/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 7a2 2 0 0 0-2 2v8h2v-4h2v4h2V9a2 2 0 0 0-2-2h-2m0 2h2v2h-2V9Z"/></svg>
+  
+  <span class="md-ellipsis">
+    最小均值环问题
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../minimum-ratio-cycle-problem/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 10.5V9a2 2 0 0 0-2-2H9v10h4a2 2 0 0 0 2-2v-1.5c0-.8-.7-1.5-1.5-1.5.8 0 1.5-.7 1.5-1.5M13 15h-2v-2h2v2m0-4h-2V9h2v2Z"/></svg>
+  
+  <span class="md-ellipsis">
+    最小比例环问题
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basic-cyclic-scheduling-problem/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-1h-2v1h-2V9h2v1h2V9a2 2 0 0 0-2-2h-2Z"/></svg>
+  
+  <span class="md-ellipsis">
+    基本周期调度问题
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-%E6%87%92%E6%83%B0-Dijkstra-%E7%AE%97%E6%B3%95" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. 懒惰 Dijkstra 算法
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. 完整代码
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+  <h1>懒惰 Dijkstra 算法</h1>
+
+<div class="admonition quote close classic">
+<p class="admonition-title">虽然大多数编程语言的标准库提供了基于二叉堆的优先队列数据结构，但它们通常不支持 <code>decrease_key</code> 操作，使标准 Dijkstra 算法的实现变得十分繁琐。</p>
+</div>
+<h2 id="1-%E6%87%92%E6%83%B0-Dijkstra-%E7%AE%97%E6%B3%95">1. 懒惰 Dijkstra 算法</h2>
+<p>在上一篇文章中我们总结道：当 <span class="arithmatex">\(|E|= O(|V|^2 \mathbin{/} \log |V|)\)</span> 时，基于二叉堆的 Dijkstra 算法性能更好。事实上，如果没有对图的稠密性做特殊说明，我们通常认为基于二叉堆的 Dijkstra 算法就是 <strong>标准 Dijkstra 算法</strong>。然而，虽然大多数编程语言的标准库提供了基于二叉堆的优先队列数据结构，但它们通常不支持 <code>decrease_key</code> 操作，使标准 Dijkstra 算法的实现变得十分繁琐。</p>
+<p>幸运的是，我们依然可以使用不提供 <code>decrease_key</code> 操作的优先队列来实现 Dijkstra 算法，并且保持与标准 Dijkstra 算法相当的运行速度，只需要对算法做如下改变：</p>
+<ul>
+<li>当成功降低了某个已经在优先队列中的节点的最短路径估计值，我们不使用 <code>decrease_key</code> 操作，而是简单地使用 <code>insert</code> 操作将带有新最短路径估计值的节点插入到优先队列中；</li>
+<li>从优先队列中取出节点后，如果这不是该节点第一次被取出，我们会直接忽略它。</li>
+</ul>
+<p>我们称这个版本的 Dijkstra 算法为 <strong>懒惰 Dijkstra 算法</strong>，因为我们允许节点重复进入优先队列，并且延迟了对重复节点的删除操作。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">懒惰 Dijkstra 算法</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">bool</span><span class="w"> </span><span class="nf">relax</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">w</span><span class="p">;</span>
+<span class="w">    </span><span class="n">prev</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">u</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">lazy_dijkstra</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Graph</span><span class="w"> </span><span class="o">&amp;</span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">dist</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">G</span><span class="p">.</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">inf</span><span class="p">);</span>
+<span class="w">  </span><span class="n">prev</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">G</span><span class="p">.</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">nil</span><span class="p">);</span>
+<span class="w">  </span><span class="n">dist</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">PriorityQueue</span><span class="w"> </span><span class="n">Q</span><span class="p">;</span>
+<span class="w">  </span><span class="n">Q</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="k">not</span><span class="w"> </span><span class="n">Q</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">du</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Q</span><span class="p">.</span><span class="n">extract_min</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">du</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">]</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">G</span><span class="p">.</span><span class="n">A</span><span class="p">[</span><span class="n">u</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">relax</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="n">Q</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>在懒惰 Dijkstra 算法中，由于节点允许重复进入优先队列，优先队列的元素数量从 <span class="arithmatex">\(O(|V|)\)</span> 增加到 <span class="arithmatex">\(O(|E|)\)</span>。因此，算法执行了 <span class="arithmatex">\(O(|E|)\)</span> 次 <code>extract_min</code> 和 <code>insert</code> 操作，总运行时间是 <span class="arithmatex">\(O(|E| \log |E|)\)</span>。考虑到 <span class="arithmatex">\(|E| = O(|V|^2)\)</span>，这个运行时间也可以表示为 <span class="arithmatex">\(O(|E| \log |V|)\)</span>，即懒惰 Dijkstra 算法和标准 Dijkstra 算法的速度相当，唯一变得更差的是懒惰 Dijkstra 算法的优先队列占用了更多的空间。</p>
+<h2 id="2-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81">2. 完整代码</h2>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="2-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81-%E4%B8%BB%E7%A8%8B%E5%BA%8F" name="__tabbed_1" type="radio" /><input id="2-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81-%E6%87%92%E6%83%B0-Dijkstra-%E7%AE%97%E6%B3%95" name="__tabbed_1" type="radio" /><input id="2-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81-%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97" name="__tabbed_1" type="radio" /><input id="2-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81-%E5%9B%BE" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="2-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81-%E4%B8%BB%E7%A8%8B%E5%BA%8F"><span class="twemoji big-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m0-18A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2m-2 14.5 6-4.5-6-4.5v9Z"/></svg></span> 主程序</label><label for="2-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81-%E6%87%92%E6%83%B0-Dijkstra-%E7%AE%97%E6%B3%95"><span class="twemoji big-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m0 16H5V5h14v14M6.2 7.7h5v1.5h-5V7.7m6.8 8.1h5v1.5h-5v-1.5m0-2.6h5v1.5h-5v-1.5M8 18h1.5v-2h2v-1.5h-2v-2H8v2H6V16h2v2m6.1-7.1 1.4-1.4 1.4 1.4 1.1-1-1.4-1.4L18 7.1 16.9 6l-1.4 1.4L14.1 6 13 7.1l1.4 1.4L13 9.9l1.1 1Z"/></svg></span> 懒惰 Dijkstra 算法</label><label for="2-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81-%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97"><span class="twemoji big-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 19h8v-2h-8v2m0-5.5h8v-2h-8v2M14 8h8V6h-8v2M2 12.5C2 8.92 4.92 6 8.5 6H9V4l3 3-3 3V8h-.5C6 8 4 10 4 12.5S6 17 8.5 17H12v2H8.5C4.92 19 2 16.08 2 12.5Z"/></svg></span> 优先队列</label><label for="2-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81-%E5%9B%BE"><span class="twemoji big-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 5.37-.44-.06L6 14.9c.24.21.4.48.47.78h11.06c.07-.3.23-.57.47-.78l-5.56-9.59-.44.06M6.6 16.53l4.28 2.53c.29-.27.69-.43 1.12-.43.43 0 .83.16 1.12.43l4.28-2.53H6.6M12 22a1.68 1.68 0 0 1-1.68-1.68l.09-.56-4.3-2.55c-.31.36-.76.58-1.27.58a1.68 1.68 0 0 1-1.68-1.68c0-.79.53-1.45 1.26-1.64V9.36c-.83-.11-1.47-.82-1.47-1.68A1.68 1.68 0 0 1 4.63 6c.55 0 1.03.26 1.34.66l4.41-2.53-.06-.45c0-.93.75-1.68 1.68-1.68.93 0 1.68.75 1.68 1.68l-.06.45 4.41 2.53c.31-.4.79-.66 1.34-.66a1.68 1.68 0 0 1 1.68 1.68c0 .86-.64 1.57-1.47 1.68v5.11c.73.19 1.26.85 1.26 1.64a1.68 1.68 0 0 1-1.68 1.68c-.51 0-.96-.22-1.27-.58l-4.3 2.55.09.56A1.68 1.68 0 0 1 12 22M10.8 4.86 6.3 7.44l.02.24c0 .71-.44 1.32-1.06 1.57l.03 5.25 5.51-9.64m2.4 0 5.51 9.64.03-5.25c-.62-.25-1.06-.86-1.06-1.57l.02-.24-4.5-2.58Z"/></svg></span> 图</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename"><code>lazy-dijkstra-algorithm/main.cpp</code></span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;lazy-dijkstra.h&quot;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;stxyz&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">Graph</span><span class="w"> </span><span class="n">G</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">);</span>
+<span class="w">  </span><span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">LazyDijkstra</span><span class="w"> </span><span class="n">LD</span><span class="p">;</span>
+<span class="w">  </span><span class="n">LD</span><span class="p">.</span><span class="n">lazy_dijkstra</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;从源点 &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; 出发的最短路径：&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">G</span><span class="p">.</span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="n">v</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LD</span><span class="p">.</span><span class="n">reconstruct_shortest_path</span><span class="p">(</span><span class="n">v</span><span class="p">);</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">names</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">LD</span><span class="p">.</span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; &quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">names</span><span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s">&quot;-&gt;&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename"><code>lazy-dijkstra-algorithm/lazy-dijkstra.h</code></span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="cp">#ifndef LAZY_DIJKSTRA_H</span>
+<span class="cp">#define LAZY_DIJKSTRA_H</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;graph.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;priority-queue.h&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">LazyDijkstra</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dist</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">prev</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">relax</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">w</span><span class="p">;</span>
+<span class="w">      </span><span class="n">prev</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">u</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">lazy_dijkstra</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Graph</span><span class="w"> </span><span class="o">&amp;</span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">dist</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">G</span><span class="p">.</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">inf</span><span class="p">);</span>
+<span class="w">    </span><span class="n">prev</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">G</span><span class="p">.</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">nil</span><span class="p">);</span>
+<span class="w">    </span><span class="n">dist</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">PriorityQueue</span><span class="w"> </span><span class="n">Q</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Q</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="k">not</span><span class="w"> </span><span class="n">Q</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">du</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Q</span><span class="p">.</span><span class="n">extract_min</span><span class="p">();</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">du</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">]</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">G</span><span class="p">.</span><span class="n">A</span><span class="p">[</span><span class="n">u</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">relax</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Q</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]);</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">reconstruct_shortest_path</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">inf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="p">{};</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">p</span><span class="p">;</span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">nil</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prev</span><span class="p">[</span><span class="n">x</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">reverse</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">p</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="cp">#endif</span>
+</code></pre></div></td></tr></table></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename"><code>lazy-dijkstra-algorithm/priority-queue.h</code></span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="cp">#ifndef PRIORITY_QUEUE_H</span>
+<span class="cp">#define PRIORITY_QUEUE_H</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PriorityQueue</span><span class="w"> </span><span class="p">{</span>
+<span class="k">private</span><span class="o">:</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">priority_queue</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">                      </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;&gt;</span><span class="p">,</span>
+<span class="w">                      </span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">bool</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="p">,</span>
+<span class="w">                                         </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>
+
+<span class="k">public</span><span class="o">:</span>
+<span class="w">  </span><span class="n">PriorityQueue</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">data</span><span class="p">([](</span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">second</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">second</span><span class="p">;</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">empty</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">extract_min</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">top</span><span class="p">();</span>
+<span class="w">    </span><span class="n">data</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">min</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">insert</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">d</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="cp">#endif</span>
+</code></pre></div></td></tr></table></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename"><code>shortest-path-problem/graph.h</code></span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="cp">#ifndef GRAPH_H</span>
+<span class="cp">#define GRAPH_H</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Graph</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">tuple</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">E</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">A</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">Graph</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">n</span><span class="p">(</span><span class="n">n</span><span class="p">),</span><span class="w"> </span><span class="n">E</span><span class="p">(),</span><span class="w"> </span><span class="n">A</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">add_edge</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">E</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">);</span>
+<span class="w">    </span><span class="n">A</span><span class="p">[</span><span class="n">u</span><span class="p">].</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">clear</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">E</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">A</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="p">{});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">inf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;::</span><span class="n">infinity</span><span class="p">();</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">nil</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+
+<span class="cp">#endif</span>
+</code></pre></div></td></tr></table></div>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="页脚" >
+        
+          
+          <a href="../dijkstra-algorithm/" class="md-footer__link md-footer__link--prev" aria-label="上一页: Dijkstra 算法">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              <div class="md-ellipsis">
+                Dijkstra 算法
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../floyd-warshall-algorithm/" class="md-footer__link md-footer__link--next" aria-label="下一页: Floyd-Warshall 算法">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              <div class="md-ellipsis">
+                Floyd-Warshall 算法
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024
+      <a href="/"> OR Pie </a>
+    </div>
+  
+  
+    <div>
+      Made with
+      <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener"> Material for MkDocs </a>
+    </div>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2m0 2v14h14V5H5m6 2h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2m0 2v6h2V9h-2Z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 7h4a2 2 0 0 1 2 2v2c0 .84-.5 1.55-1.24 1.85L15 17h-2l-1.2-4H11v4H9V7m2 2v2h2V9h-2M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2m0 2v14h14V5H5Z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2M6 7h11v2h-2v5a1 1 0 0 0 1 1 1 1 0 0 0 1-1h2a3 3 0 0 1-3 3 3 3 0 0 1-3-3V9h-3v8H8V9H6"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.copy", "navigation.expand", "navigation.footer", "navigation.indexes", "navigation.tracking", "toc.follow"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+      
+        <script src="../../javascripts/katex.js"></script>
+      
+    
+  </body>
+</html>
